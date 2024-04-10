@@ -3,7 +3,7 @@ import numpy as np
 from Basis.Operator.Operator import Operator
 from Basis.Operator.OperatorList import OperatorList
 from Basis.State.MatrixProductState import MatrixProductState
-from Tool.SVD import svd, svd_chi
+from Tool.SVD import svd_chi
 
 
 def operator_state(operator, mps_list_origin, chi):
@@ -50,7 +50,7 @@ def operator_state(operator, mps_list_origin, chi):
                 moment = np.einsum('efac,acd->efd', operator.data,moment)
                 U, V = svd_chi(moment.reshape(moment.shape[0], moment.shape[1] * moment.shape[2]), chi)
                 mps_list[index_0] = U
-                mps_list[index_1] = V.reshape(U.shape[1], moment.shape[1] , moment.shape[2])
+                mps_list[index_1] = V.reshape(U.shape[1], moment.shape[1], moment.shape[2])
 
             ##  右端的作用方式
             elif operator.target_index[0] != 0 and operator.target_index[1] == mps_list.N - 1:

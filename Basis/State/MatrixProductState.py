@@ -70,7 +70,10 @@ class MatrixProductState():
 
             ##  结果赋值并中心正交化
             result = MatrixProductState(self.N, data_new)
-            result.center_orthogonalization(self.n_c)
+            if self.n_c != -1:
+                result.center_orthogonalization(self.n_c)
+            else:
+                result.center_orthogonalization(0)
 
         ##  返回结果
         return result
@@ -92,7 +95,10 @@ class MatrixProductState():
 
         ##  结果赋值并中心正交化
         result = MatrixProductState(self.N, data_new)
-        result.center_orthogonalization(self.n_c)
+        if self.n_c != -1:
+            result.center_orthogonalization(self.n_c)
+        else:
+            result.center_orthogonalization(0)
 
         ##  返回结果
         return result
@@ -114,7 +120,10 @@ class MatrixProductState():
 
         ##  结果赋值并中心正交化
         result = MatrixProductState(self.N, data_new)
-        result.center_orthogonalization(self.n_c)
+        if self.n_c!=-1:
+            result.center_orthogonalization(self.n_c)
+        else:
+            result.center_orthogonalization(0)
 
         ##  返回结果
         return result
@@ -145,8 +154,12 @@ class MatrixProductState():
             else:
                 mps_list.append(data[i].reshape(1, data[i].shape[0], 1))
 
+        ## 将结果变成一个MPS类型对象，并中心正交化
+        result = MatrixProductState(len(data), mps_list)
+        result.center_orthogonalization(0)
+
         ##  返回结果
-        return MatrixProductState(len(data), mps_list)
+        return result
 
     ##  将张量做精确TT分解的静态函数----------------------------------------------------------------------------------------------------
 
@@ -244,6 +257,7 @@ class MatrixProductState():
     def center_orthogonalization(self, n_c):
         ## 参量检查模块
         assert isinstance(n_c, int), "n_c必须是int类型"
+        assert 0 <= n_c < self.N, "n_c不能超出范围"
 
         ##  将中心左侧的张量正交化
         for i in range(n_c):
@@ -287,6 +301,47 @@ class MatrixProductState():
     def copy(self):
         return copy.deepcopy(self)
 
+    @classmethod
+    ##  随机产生一个MPS的静态函数-------------------------------------------------------------------------------------------------------
+    def random_mps(cls,dim_list,n_c,chi):
+        ##  参量检查模块
+        assert isinstance(dim_list,list) or isinstance(dim_list,np.ndarray),"dim_list格式必须是list类型或np.adarray类型"
+        if isinstance(dim_list,np.ndarray):
+            assert len(dim_list.shape)==1,"dim_list必须是一维的"
+        else:
+            assert all(isinstance(term,int) for term in dim_list),"dim_list中所有元素都需要是int类型"
+        assert isinstance(n_c,int),"n_c必须是int类型"
+        assert isinstance(chi,int),"chi必须是int类型"
+
+        ##  赋予每个MPS位点一个特定格式张量
+        mps_list=[]
+        start=None
+        for i in range(len(dim_list)):
+            if i==0:
+                moment=np.random.rand(int(dim_list[i]),chi)
+                moment=moment/np.linalg.norm(moment)
+                mps_list.append(moment)
+            elif i==len(dim_list)-1:
+                moment=np.random.rand(chi, int(dim_list[i]))
+                moment = moment / np.linalg.norm(moment)
+                mps_list.append(moment)
+            else:
+                moment = np.random.rand(chi, int(dim_list[i]),chi)
+                moment = moment / np.linalg.norm(moment)
+                mps_list.append(moment)
+
+        ##  构造MPS对象并中心正交化
+        result=MatrixProductState(len(dim_list), mps_list)
+        result=result/np.sqrt(result*result)
+        result.center_orthogonalization(n_c)
+
+        ##  返回结果
+        return result
+
+
+if __name__ == '__main__':
+    x=MatrixProductState.random_mps(np.array([2,3,2]),2,2)
+    print(x*x)
 
 
 

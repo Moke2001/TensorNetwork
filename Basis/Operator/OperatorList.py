@@ -92,3 +92,10 @@ class OperatorList():
     def copy(self):
         return OperatorList(copy.deepcopy(self.name),copy.deepcopy(self.N),copy.deepcopy(self.single_list),copy.deepcopy(self.double_list))
 
+    ##  得到各个局域维度的成员函数-------------------------------------------------------------------------------------------------------
+    def get_dim(self):
+        dim_list=[]
+        for i in range(self.N):
+            dim_list.append(self.single_list[i].dim)
+        return dim_list
+
