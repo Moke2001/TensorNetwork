@@ -62,10 +62,5 @@ def dmrg(H_list,chi):
     return psi, energy_result
 
 
-if __name__=='__main__':
-    H=OperatorList.hamiltonian_transverse_ising1(3,[0.5,0.5],[0.3,0.4,0.2])
-    psi, energy_result=dmrg(H,3)
-    print(energy_result)
-
 
 
