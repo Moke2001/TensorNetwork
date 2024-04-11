@@ -7,17 +7,21 @@ from Tool.SVD import svd, svd_lr, svd_chi
 
 class MatrixProductState():
     ##  构造函数----------------------------------------------------------------------------------------------------------------------------
-    def __init__(self, N, data):
+    def __init__(self, N, data,n_c,chi):
         ##  参量检查模块
         assert isinstance(N, int),"N必须是int类型"
         assert isinstance(data,list),"data必须是list类型"
+        assert isinstance(chi,int),"chi必须是int类型"
         assert all(isinstance(term,np.ndarray) for term in data),"data中的元素必须是np.ndarray类型"
         assert N == len(data),"N必须与data的长度相等"
+        assert chi>0,"chi必须大于0"
 
         ##  赋值模块
         self.N = N  # 局域个数
         self.data = data  # MPS数据
-        self.n_c=-1  # 中心序号
+        self.n_c=n_c  # 中心序号
+        self.chi=chi  # 截断维度，虚拟指标维度上界
+        self.center_orthogonalization(n_c)
 
     ##  重载方括号取值函数----------------------------------------------------------------------------------------------------------------
 
@@ -69,11 +73,7 @@ class MatrixProductState():
                 data_new.append(self.data[i].copy() * Q)
 
             ##  结果赋值并中心正交化
-            result = MatrixProductState(self.N, data_new)
-            if self.n_c != -1:
-                result.center_orthogonalization(self.n_c)
-            else:
-                result.center_orthogonalization(0)
+            result = MatrixProductState(self.N, data_new, self.n_c, self.chi)
 
         ##  返回结果
         return result
@@ -94,11 +94,7 @@ class MatrixProductState():
             data_new.append(self.data[i].copy() * Q)
 
         ##  结果赋值并中心正交化
-        result = MatrixProductState(self.N, data_new)
-        if self.n_c != -1:
-            result.center_orthogonalization(self.n_c)
-        else:
-            result.center_orthogonalization(0)
+        result = MatrixProductState(self.N, data_new, self.n_c, self.chi)
 
         ##  返回结果
         return result
@@ -119,11 +115,7 @@ class MatrixProductState():
             data_new.append(self.data[i].copy() / Q)
 
         ##  结果赋值并中心正交化
-        result = MatrixProductState(self.N, data_new)
-        if self.n_c!=-1:
-            result.center_orthogonalization(self.n_c)
-        else:
-            result.center_orthogonalization(0)
+        result = MatrixProductState(self.N, data_new, self.n_c, self.chi)
 
         ##  返回结果
         return result
@@ -155,8 +147,7 @@ class MatrixProductState():
                 mps_list.append(data[i].reshape(1, data[i].shape[0], 1))
 
         ## 将结果变成一个MPS类型对象，并中心正交化
-        result = MatrixProductState(len(data), mps_list)
-        result.center_orthogonalization(0)
+        result = MatrixProductState(len(data), mps_list,0,1)
 
         ##  返回结果
         return result
@@ -200,8 +191,7 @@ class MatrixProductState():
                 train_list.append(U)  # 将U添加进列表中
 
         ## 将结果变成一个MPS类型对象，并中心正交化
-        result=MatrixProductState(num_qubit, train_list)
-        result.center_orthogonalization(0)
+        result=MatrixProductState(num_qubit, train_list,0,-1)
 
         ##  返回结果
         return result
@@ -246,8 +236,7 @@ class MatrixProductState():
                 train_list.append(U)  # 将U添加进列表中
 
         ##  将结果做成一个MPS对象，并中心正交化
-        result=MatrixProductState(num_qubit, train_list)
-        result.center_orthogonalization(0)
+        result=MatrixProductState(num_qubit, train_list,0,chi)
 
         ##  返回结果
         return result
@@ -264,7 +253,7 @@ class MatrixProductState():
 
             ##  对第零个张量单独处理
             if i == 0:
-                U,V=svd_lr(self.data[i],'l')
+                U,V=svd_lr(self.data[i],'l',self.chi)
                 self.data[i] =U
                 self.data[i+1]=mps_tensor_product(V, self.data[i+1])
 
@@ -272,8 +261,8 @@ class MatrixProductState():
             else:
                 moment=self.data[i].copy()
                 moment=moment.reshape(moment.shape[0]*moment.shape[1],moment.shape[2])
-                U,V=svd_lr(moment,'l')
-                self.data[i] = U.reshape(self.data[i].shape[0], self.data[i].shape[1], self.data[i].shape[2])
+                U,V=svd_lr(moment,'l',self.chi)
+                self.data[i] = U.reshape(self.data[i].shape[0], self.data[i].shape[1], V.shape[0])
                 self.data[i + 1] = mps_tensor_product(V, self.data[i + 1])
 
         ##  将中心右侧的张量正交化
@@ -281,7 +270,7 @@ class MatrixProductState():
 
             ##  对最后的张量单独处理
             if i == len(self.data)-1:
-                U,V=svd_lr(self.data[i],'r')
+                U,V=svd_lr(self.data[i],'r',self.chi)
                 self.data[i] =V
                 self.data[i-1]=mps_tensor_product(self.data[i-1],U)
 
@@ -289,8 +278,8 @@ class MatrixProductState():
             else:
                 moment = self.data[i].copy()
                 moment = moment.reshape(moment.shape[0],moment.shape[1]*moment.shape[2])
-                U,V=svd_lr(moment,'r')
-                self.data[i] = V.reshape(self.data[i].shape[0],self.data[i].shape[1], self.data[i].shape[2])
+                U,V=svd_lr(moment,'r',self.chi)
+                self.data[i] = V.reshape(U.shape[1],self.data[i].shape[1], self.data[i].shape[2])
                 self.data[i - 1] = mps_tensor_product(self.data[i - 1],U)
 
         ##  将中心位置修改
@@ -314,33 +303,34 @@ class MatrixProductState():
         assert isinstance(chi,int),"chi必须是int类型"
 
         ##  赋予每个MPS位点一个特定格式张量
-        mps_list=[]
-        start=None
+        mps_list=[]  # 结果数据初始化
         for i in range(len(dim_list)):
+
+            ##  头结点的处理
             if i==0:
                 moment=np.random.rand(int(dim_list[i]),chi)
-                moment=moment/np.linalg.norm(moment)
                 mps_list.append(moment)
+
+            ##  尾节点的处理
             elif i==len(dim_list)-1:
                 moment=np.random.rand(chi, int(dim_list[i]))
-                moment = moment / np.linalg.norm(moment)
                 mps_list.append(moment)
+
+            ## 中间结点的处理
             else:
                 moment = np.random.rand(chi, int(dim_list[i]),chi)
-                moment = moment / np.linalg.norm(moment)
                 mps_list.append(moment)
 
         ##  构造MPS对象并中心正交化
-        result=MatrixProductState(len(dim_list), mps_list)
+        result=MatrixProductState(len(dim_list), mps_list,n_c,chi)
         result=result/np.sqrt(result*result)
-        result.center_orthogonalization(n_c)
 
         ##  返回结果
         return result
 
 
 if __name__ == '__main__':
-    x=MatrixProductState.random_mps(np.array([2,3,2]),2,2)
+    x=MatrixProductState.random_mps(np.array([2,3,2]),2,3)
     print(x*x)
 
 

@@ -43,7 +43,7 @@ def expect(operator,mps_list):
 
                 ##  作用不在右端，中心在左端
                 elif index_op!=mps_list.N-1 and index_c==0:
-                    list_end = np.einsum('abc,bd,edc->ae', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
+                    list_end = np.einsum('abc,db,edc->ae', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
                     list_start=np.einsum('ab,ac->bc',mps_list[index_c],mps_list[index_c].conjugate())
                     for i in range(index_c + 1, index_op):
                         list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
@@ -51,7 +51,7 @@ def expect(operator,mps_list):
 
                 ##  作用不在右端，中心不在左端
                 else:
-                    list_end = np.einsum('abc,bd,edc->ae', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
+                    list_end = np.einsum('abc,db,edc->ae', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
                     list_start = np.einsum('abc,abd->cd', mps_list[index_c], mps_list[index_c].conjugate())
                     for i in range(index_c + 1, index_op):
                         list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
@@ -62,7 +62,7 @@ def expect(operator,mps_list):
 
                 ##  作用在左端，中心在右端
                 if index_c==mps_list.N-1 and index_op==0:
-                    list_start=np.einsum('ab,ac,cd->bd',mps_list[index_op],operator.data,mps_list[index_op].conjugate())
+                    list_start=np.einsum('ab,ca,cd->bd',mps_list[index_op],operator.data,mps_list[index_op].conjugate())
                     list_end=np.einsum('ab,cb->ac',mps_list[index_c],mps_list[index_c].conjugate())
                     for i in range(index_op+1,index_c):
                         list_start=np.einsum('ab,acd,bce->de',list_start,mps_list[i],mps_list[i].conjugate())
@@ -70,7 +70,7 @@ def expect(operator,mps_list):
 
                 ##  作用不在左端，中心在右端
                 elif index_c==mps_list.N-1 and index_op!=0:
-                    list_start = np.einsum('abc,be,aef->cf', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
+                    list_start = np.einsum('abc,eb,aef->cf', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
                     list_end = np.einsum('ab,cb->ac', mps_list[index_c], mps_list[index_c].conjugate())
                     for i in range(index_op + 1, index_c):
                         list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
@@ -78,7 +78,7 @@ def expect(operator,mps_list):
 
                 ##  作用在左端，中心不在右端
                 elif index_c!=mps_list.N-1 and index_op==0:
-                    list_start = np.einsum('ab,ac,cd->bd', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
+                    list_start = np.einsum('ab,ca,cd->bd', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
                     list_end=np.einsum('abc,dbc->ad',mps_list[index_c],mps_list[index_c].conjugate())
                     for i in range(index_op + 1, index_c):
                         list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
@@ -86,7 +86,7 @@ def expect(operator,mps_list):
 
                 ##  作用不在左端，中心不在右端
                 else:
-                    list_start = np.einsum('abc,be,aef->cf', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
+                    list_start = np.einsum('abc,eb,aef->cf', mps_list[index_op], operator.data,mps_list[index_op].conjugate())
                     list_end = np.einsum('abc,dbc->ad', mps_list[index_c], mps_list[index_c].conjugate())
                     for i in range(index_op + 1, index_c):
                         list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
@@ -97,15 +97,15 @@ def expect(operator,mps_list):
 
                 ##  在左端
                 if index_c==0:
-                    result=np.einsum('bc,bd,dc->',mps_list[index_op], operator.data, mps_list[index_op].conjugate())
+                    result=np.einsum('bc,db,dc->',mps_list[index_op], operator.data, mps_list[index_op].conjugate())
 
                 ##  在右端
                 elif  index_c==mps_list.N-1:
-                    result = np.einsum('ab,bd,ad->', mps_list[index_op], operator.data, mps_list[index_op].conjugate())
+                    result = np.einsum('ab,db,ad->', mps_list[index_op], operator.data, mps_list[index_op].conjugate())
 
                 ##  在中间
                 else:
-                    result = np.einsum('abc,bd,adc->', mps_list[index_op], operator.data, mps_list[index_op].conjugate())
+                    result = np.einsum('abc,db,adc->', mps_list[index_op], operator.data, mps_list[index_op].conjugate())
 
         ##  双位点作用情况
         elif isinstance(operator.target_index,list):

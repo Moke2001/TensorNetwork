@@ -71,7 +71,7 @@ def operator_state(operator, mps_list_origin, chi):
             ##  中间的作用方式
             else:
                 moment = np.einsum('abc,cde->abde', mps_list[index_0], mps_list[index_1])
-                moment = np.einsum('fgbd,abde->afge', moment, operator.data)
+                moment = np.einsum('abcd,ecdf->eabf', operator.data,moment)
                 U, V = svd_chi(moment.reshape(moment.shape[0] * moment.shape[1], moment.shape[2] * moment.shape[3]), chi)
                 mps_list[index_0] = U.reshape(moment.shape[0], moment.shape[1], V.shape[0])
                 mps_list[index_1] = V.reshape(U.shape[1], moment.shape[2], moment.shape[3])

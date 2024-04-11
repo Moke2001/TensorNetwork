@@ -17,24 +17,24 @@ def compare():
     t_0=0  # 开始时间
     t_1=20  # 结束时间
     delta_t=0.001  # 时间间隔
-    chi=3  # 截断维度
+    chi=6  # 截断维度
 
     ##  实例构造模块-----------------------------------------------------------------------------------------------------------------------
 
     ##  TEBD算法实例构造
-    state_me = np.array([[[1, 0], [0, 0]], [[0, 0], [0, 0]]])  # 初态态矢张量
-    psi_me = MatrixProductState.tensor2mps(state_me, 3)  # 初态态矢MPS
+    state_me = np.array([[[[1, 0],[0,0]], [[0, 0],[0,0]]], [[[0, 0],[0,0]], [[0, 0],[0,0]]]])  # 初态态矢张量
+    psi_me = MatrixProductState.tensor2mps(state_me, chi)  # 初态态矢MPS
     expect_opeartor_me = Operator.operator_sigmaz(psi_me.N, 1)  # 可观测量
-    H_list_me = OperatorList.hamiltonian_transverse_ising1(3, [0.2, 0.2], [0.5, 0.5, 0.5])  # 哈密顿量
+    H_list_me = OperatorList.hamiltonian_transverse_ising1(4, [0.2, 0.2,0.2], [0.5, 0.5, 0.5,0.5])  # 哈密顿量
 
     ##  Qutip实例构造
-    H_qutip=hamiltonian_transverse_ising1(3, [0.2, 0.2], [0.5, 0.5, 0.5])  # 哈密顿量
-    psi_qutip=tensor(basis(2,0),basis(2,0),basis(2,0))  # 初态态矢
+    H_qutip=hamiltonian_transverse_ising1(4, [0.2, 0.2,0.2], [0.5, 0.5, 0.5,0.5])  # 哈密顿量
+    psi_qutip=tensor(basis(2,0),basis(2,0),basis(2,0),basis(2,0))  # 初态态矢
 
     ##  求解模块----------------------------------------------------------------------------------------------------------------------------
 
     value_list_me,t_list= tebd(psi_me, H_list_me, expect_opeartor_me, t_0, t_1, delta_t, chi)  # TEBD算法求解
-    value_list_qutip=mesolve(H_qutip,psi_qutip,t_list,e_ops=[operator_sigma(3,2,'z')]).expect[0]  # 精确对角化求解
+    value_list_qutip=mesolve(H_qutip,psi_qutip,t_list,e_ops=[operator_sigma(4,1,'z')]).expect[0]  # 精确对角化求解
 
     ##  绘图模块----------------------------------------------------------------------------------------------------------------------------
 

@@ -18,7 +18,7 @@ def svd(M):
 
 
 ##  用于中心正交化的奇异值分解，选择某个方向合并，结果是精确的
-def svd_lr(M,type):
+def svd_lr(M,type,chi):
     ##  初始化U和V
     U=0
     V=0
