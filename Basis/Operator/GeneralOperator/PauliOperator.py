@@ -23,6 +23,10 @@ def pauli_operator(N,target_index,type):
             data = np.array([[0,1],[1,0]])+1j*np.array([[0,-1j],[1j,0]])
         elif type == "I"or type == "i":
             data = np.identity(2)
+        elif type == "1":
+            data = np.array([[1,0],[0,0]])
+        elif type == "-1":
+            data = np.array([[0,0],[0,1]])
         else:
             raise Exception("没有这样的Pauli算符类型")
 

@@ -13,7 +13,7 @@ def tebd(psi, H_list, expect_operator, t_0, t_1, delta_t, chi):
 
     assert isinstance(psi, MatrixProductState), "psi应是MatrixProductState类型"
     assert isinstance(H_list, OperatorList), "H_list应是OperatorList类型"
-    assert isinstance(expect_operator, Operator), "expect_operator应是Operator类型"
+    assert isinstance(expect_operator, Operator) or isinstance(expect_operator,OperatorList), "expect_operator应是Operator类型或OperatorList类型"
     assert isinstance(t_0, float) or isinstance(t_0, int), "t_0应是整数或浮点数"
     assert isinstance(t_1, float) or isinstance(t_1, int), "t_1应是整数或浮点数"
     assert isinstance(delta_t, float) or isinstance(delta_t, int), "delta_t应是整数或浮点数"

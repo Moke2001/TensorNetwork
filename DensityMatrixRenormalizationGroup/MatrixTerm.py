@@ -125,19 +125,19 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
 
                 ##  在两端
                 if index_1 == N-1 and index_0==0:
-                    s='bc,cd,fgbd,fh,hg->'
+                    s='bc,cd,bdfg,fh,hg->'
 
                 ##  在左端
                 elif index_1 != N-1 and index_0==0:
-                    s = 'abc,cd,fgbd,afh,hg->'
+                    s = 'ab,bcd,egac,ef,fgd->'
 
                 ##  在右端
                 elif index_1 == N-1 and index_0!=0:
-                    s = 'bc,cde,fgbd,fh,hge->'
+                    s = 'abc,cd,egbd,aef,fg->'
 
                 ##  在中间
                 else:
-                    s = 'abc,cde,fgbd,afh,hge->'
+                    s = 'abc,cde,bdfg,afh,hge->'
 
                 ##  求对应的结果
                 result=np.einsum(s,mps_list_0[index_0],mps_list_0[index_1],operator.data,mps_list_1[index_0].conjugate(),mps_list_1[index_1].conjugate())
@@ -199,7 +199,7 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
                     ##  作用在左端，中心不在右端
                     elif index_n!=N-1 and index_0==0:
                         list_end = np.einsum('abc,dbc->ad', mps_list_0[index_n], mps_list_1[index_n].conjugate())
-                        s = 'abc,bcd,efac,eg,gfh->dh'
+                        s = 'ab,bcd,egac,ef,fgh->dh'
                         list_start = np.einsum(s, mps_list_0[index_0], mps_list_0[index_1], operator.data,mps_list_1[index_0].conjugate(), mps_list_1[index_1].conjugate())
                         for i in range(index_n + 1, index_0):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list_0[i], mps_list_1[i].conjugate())
@@ -233,7 +233,7 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
 
         ##  双位点算符期望值的循环
         for i in range(len(operator.double_list)):
-            result = result + matrix_term(operator.single_list[i], mps_list_0,mps_list_1)
+            result = result + matrix_term(operator.double_list[i], mps_list_0,mps_list_1)
 
     ##  结果返回模块-----------------------------------------------------------------------------------------------------------------------
 

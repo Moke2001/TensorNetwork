@@ -122,11 +122,11 @@ def expect(operator,mps_list):
 
                 ##  在左端
                 elif index_1 != mps_list.N-1 and index_0==0:
-                    s = 'abc,cd,bdfg,afh,hg->'
+                    s = 'ab,bcd,egac,ef,fgd->'
 
                 ##  在右端
                 elif index_1 == mps_list.N-1 and index_0!=0:
-                    s = 'bc,cde,bdfg,fh,hge->'
+                    s = 'abc,cd,egbd,aef,fg->'
 
                 ##  在中间
                 else:
@@ -192,7 +192,7 @@ def expect(operator,mps_list):
                     ##  作用在左端，中心不在右端
                     elif index_n!=mps_list.N-1 and index_0==0:
                         list_end = np.einsum('abc,dbc->ad', mps_list[index_n], mps_list[index_n].conjugate())
-                        s = 'abc,bcd,acef,eg,gfh->dh'
+                        s = 'ab,bcd,egac,ef,fgh->dh'
                         list_start = np.einsum(s, mps_list[index_0], mps_list[index_1], operator.data,mps_list[index_0].conjugate(), mps_list[index_1].conjugate())
                         for i in range(index_n + 1, index_0):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
@@ -226,7 +226,7 @@ def expect(operator,mps_list):
 
         ##  双位点算符期望值的循环
         for i in range(len(operator.double_list)):
-            result = result + expect(operator.single_list[i], mps_list)
+            result = result + expect(operator.double_list[i], mps_list)
 
     ##  结果返回模块-----------------------------------------------------------------------------------------------------------------------
 

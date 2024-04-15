@@ -1,8 +1,12 @@
 ##  对一个量子系统求哈密顿量的基态
 import numpy as np
+
+from Basis.Operator.Hamiltonian.HamiltonianTransverseFieldIsing1 import hamiltonian_transverse_field_ising1
 from Basis.Operator.OperatorList import OperatorList
+from Basis.Relation.Expect import expect
 from Basis.State.MatrixProductState import MatrixProductState
 from DensityMatrixRenormalizationGroup.EffectiveHamiltonian import effective_hamiltonian
+from DensityMatrixRenormalizationGroup.MatrixTerm import matrix_term
 
 
 def dmrg(H_list,chi):
@@ -33,7 +37,7 @@ def dmrg(H_list,chi):
         ##  求有效哈密顿量的基态
         eig_value, eig_vector = np.linalg.eig(H_effective_matrix)  # 本征值和本征矢量
         index_min=np.argmin(eig_value)  # 最小本征值序号
-        moment=eig_vector[index_min].reshape(psi[position].shape)  # 更新参量
+        moment=eig_vector[:,index_min].reshape(psi[position].shape)  # 更新参量
         psi[position]=moment/np.linalg.norm(moment)  # 将结果赋予MPS
 
         ##  变换中心位置
@@ -52,7 +56,7 @@ def dmrg(H_list,chi):
         psi.center_orthogonalization(position)  # 将MPS向下一个位点中心正交化
 
         ##  判断是否收敛
-        if np.abs(energy_result - eig_value[index_min].real) < 0.0001:
+        if np.abs(energy_result - eig_value[index_min].real) < 0.00001:
             return psi, eig_value[index_min].real
         else:
             energy_result=eig_value[index_min].real
@@ -61,6 +65,11 @@ def dmrg(H_list,chi):
     print('已到达循环上限')
     return psi, energy_result
 
+
+if __name__=='__main__':
+    H_list=hamiltonian_transverse_field_ising1(5,[0.5,0.5,0.5,0.5],[1,1,1,1,1])
+    psi,energy_result=dmrg(H_list,15)
+    print(energy_result)
 
 
 

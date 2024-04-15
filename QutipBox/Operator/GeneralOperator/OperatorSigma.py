@@ -19,6 +19,10 @@ def operator_sigma(N, j,arg):
             moment=sigmax()+1j*sigmay()
         elif arg=='-':
             moment=sigmax()-1j*sigmay()
+        elif arg=='1':
+            moment=0.5*(sigmaz()+identity(2))
+        elif arg=='0':
+            moment=0.5*(-sigmaz()+identity(2))
         else:
             raise ValueError('不存在这样的算符类型')
 
