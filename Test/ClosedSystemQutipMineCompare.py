@@ -1,7 +1,6 @@
 ##  将TEBD算法和精确对角化算法求系统演化的结果相比较
 import numpy as np
 from qutip import *
-
 from Basis.Operator.GeneralOperator.PauliOperator import pauli_operator
 from Basis.Operator.Hamiltonian.HamiltonianTransverseFieldIsing1 import hamiltonian_transverse_field_ising1
 from Basis.Operator.Operator import Operator

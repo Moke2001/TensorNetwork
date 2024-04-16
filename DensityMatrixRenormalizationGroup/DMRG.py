@@ -25,7 +25,7 @@ def dmrg(H_list,chi):
 
     ##  经历若干次扫描
     for i in range(sweep_times*N):
-
+        print(i)
         ##  求有效哈密顿量
         H_effective=effective_hamiltonian(H_list,position,psi)  # 有效哈密顿量的张量形式
         dim_matrix=np.prod(psi[position].shape)  # 有效哈密顿量的矩阵维度
@@ -64,9 +64,9 @@ def dmrg(H_list,chi):
 
 
 if __name__=='__main__':
-    H_list=hamiltonian_transverse_field_ising1(6,[0.5]*5,[1]*6)
-    psi,energy_result=dmrg(H_list,15)
-    print(energy_result)
+    H_list=hamiltonian_transverse_field_ising1(10,[0.5]*9,[1]*10)
+    psi,energy=dmrg(H_list,15)
+    print(energy)
 
 
 
