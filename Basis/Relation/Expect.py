@@ -185,7 +185,7 @@ def expect(operator,mps_list):
                         list_end=np.einsum('ab,cb->ac',mps_list[index_n],mps_list[index_n].conjugate())
                         s='ab,bcd,acef,eg,gfh->dh'
                         list_start=np.einsum(s,mps_list[index_0],mps_list[index_1],operator.data,mps_list[index_0].conjugate(),mps_list[index_1].conjugate())
-                        for i in range(index_n+1,index_0):
+                        for i in range(index_1+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
@@ -194,7 +194,7 @@ def expect(operator,mps_list):
                         list_end = np.einsum('abc,dbc->ad', mps_list[index_n], mps_list[index_n].conjugate())
                         s = 'ab,bcd,egac,ef,fgh->dh'
                         list_start = np.einsum(s, mps_list[index_0], mps_list[index_1], operator.data,mps_list[index_0].conjugate(), mps_list[index_1].conjugate())
-                        for i in range(index_n + 1, index_0):
+                        for i in range(index_1+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
@@ -203,7 +203,7 @@ def expect(operator,mps_list):
                         list_end = np.einsum('ab,cb->ac', mps_list[index_n], mps_list[index_n].conjugate())
                         s = 'iab,bcd,acef,ieg,gfh->dh'
                         list_start = np.einsum(s, mps_list[index_0], mps_list[index_1], operator.data,mps_list[index_0].conjugate(), mps_list[index_1].conjugate())
-                        for i in range(index_n + 1, index_0):
+                        for i in range(index_1+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
@@ -212,7 +212,7 @@ def expect(operator,mps_list):
                         list_end = np.einsum('abc,dbc->ad', mps_list[index_n], mps_list[index_n].conjugate())
                         s = 'iab,bcd,acef,ieg,gfh->dh'
                         list_start = np.einsum(s, mps_list[index_0], mps_list[index_1], operator.data,mps_list[index_0].conjugate(), mps_list[index_1].conjugate())
-                        for i in range(index_n + 1, index_0):
+                        for i in range(index_1+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list[i], mps_list[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 

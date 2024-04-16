@@ -1,12 +1,9 @@
 ##  对一个量子系统求哈密顿量的基态
 import numpy as np
-
 from Basis.Operator.Hamiltonian.HamiltonianTransverseFieldIsing1 import hamiltonian_transverse_field_ising1
 from Basis.Operator.OperatorList import OperatorList
-from Basis.Relation.Expect import expect
 from Basis.State.MatrixProductState import MatrixProductState
 from DensityMatrixRenormalizationGroup.EffectiveHamiltonian import effective_hamiltonian
-from DensityMatrixRenormalizationGroup.MatrixTerm import matrix_term
 
 
 def dmrg(H_list,chi):
@@ -67,7 +64,7 @@ def dmrg(H_list,chi):
 
 
 if __name__=='__main__':
-    H_list=hamiltonian_transverse_field_ising1(5,[0.5,0.5,0.5,0.5],[1,1,1,1,1])
+    H_list=hamiltonian_transverse_field_ising1(6,[0.5]*5,[1]*6)
     psi,energy_result=dmrg(H_list,15)
     print(energy_result)
 

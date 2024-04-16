@@ -192,7 +192,7 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
                         list_end=np.einsum('ab,cb->ac',mps_list_0[index_n],mps_list_1[index_n].conjugate())
                         s='ab,bcd,efac,eg,gfh->dh'
                         list_start=np.einsum(s,mps_list_0[index_0],mps_list_0[index_1],operator.data,mps_list_1[index_0].conjugate(),mps_list_1[index_1].conjugate())
-                        for i in range(index_n+1,index_0):
+                        for i in range(index_0+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list_0[i], mps_list_1[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
@@ -201,7 +201,7 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
                         list_end = np.einsum('abc,dbc->ad', mps_list_0[index_n], mps_list_1[index_n].conjugate())
                         s = 'ab,bcd,egac,ef,fgh->dh'
                         list_start = np.einsum(s, mps_list_0[index_0], mps_list_0[index_1], operator.data,mps_list_1[index_0].conjugate(), mps_list_1[index_1].conjugate())
-                        for i in range(index_n + 1, index_0):
+                        for i in range(index_0+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list_0[i], mps_list_1[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
@@ -210,7 +210,7 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
                         list_end = np.einsum('ab,cb->ac', mps_list_0[index_n], mps_list_0[index_n].conjugate())
                         s = 'iab,bcd,efac,ieg,gfh->dh'
                         list_start = np.einsum(s, mps_list_0[index_0], mps_list_0[index_1], operator.data,mps_list_1[index_0].conjugate(), mps_list_1[index_1].conjugate())
-                        for i in range(index_n + 1, index_0):
+                        for i in range(index_0+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list_0[i], mps_list_1[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
@@ -219,7 +219,7 @@ def matrix_term(operator,mps_list_0_origin,mps_list_1_origin):
                         list_end = np.einsum('abc,dbc->ad', mps_list_0[index_n], mps_list_1[index_n].conjugate())
                         s = 'iab,bcd,efac,ieg,gfh->dh'
                         list_start = np.einsum(s, mps_list_0[index_0], mps_list_0[index_1], operator.data,mps_list_1[index_0].conjugate(), mps_list_1[index_1].conjugate())
-                        for i in range(index_n + 1, index_0):
+                        for i in range(index_0+1,index_n):
                             list_start = np.einsum('ab,acd,bce->de', list_start, mps_list_0[i], mps_list_1[i].conjugate())
                         result = np.einsum('ab,ab->', list_start, list_end)
 
