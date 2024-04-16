@@ -1,22 +1,34 @@
+##  求解DMRG过程中的等效哈密顿量
 import numpy as np
 from Basis.Operator.Operator import Operator
 from Basis.Operator.OperatorList import OperatorList
+from Basis.State.MatrixProductState import MatrixProductState
 
 
 def effective_hamiltonian(H_list,position,psi_origin):
-    psi=psi_origin.copy()
-    result=0
+    ##  参量类型检查模块-------------------------------------------------------------------------------------------------------------------
+
+    assert isinstance(H_list,OperatorList) or isinstance(H_list,Operator), "H_list必须是OperatorList类型或Operator类型"
+    assert isinstance(position,int),"position必须是int类型"
+    assert isinstance(psi_origin,MatrixProductState),"psi_origin必须是MatrixProductState类型"
+
+    ##  初始化
+    psi=psi_origin.copy()  # 防止参量被改变
+    result=0  # 结果初始化
+
     ##  单一算符计算模块-------------------------------------------------------------------------------------------------------------------
 
     if isinstance(H_list,Operator):
 
-        ##  单个位点作用的情况
+        ##  单个位点作用的情况----------------------------------------------------
+
         if isinstance(H_list.target_index,int):
             index_op = H_list.target_index  # 算符作用位点
             index_c=position  # 中心位点
             N=psi_origin.N
 
-            ##  当作用在中心右边时
+            ##  当作用在中心右边时----------------------------------------------------
+
             if index_op>index_c:
 
                 ##  作用在右端，中心在左端
@@ -71,7 +83,8 @@ def effective_hamiltonian(H_list,position,psi_origin):
                         list_start = np.einsum('abcdefgh,gij,hkl->abcdefjl', list_start, psi[i], psi[i].conjugate())
                     result = np.einsum('abcdefjl,jl->abcdef', list_start, list_end)
 
-            ##  当作用在中心左边时
+            ##  当作用在中心左边时----------------------------------------------------
+
             elif index_op<index_c:
 
                 ##  作用在左端，中心在右端
@@ -126,7 +139,8 @@ def effective_hamiltonian(H_list,position,psi_origin):
                     list_end = np.einsum('ab,cd,gh,ef->afbhcegd', I_left, I_right, I_center, I_left)
                     result = np.einsum('af,afbhcegd->bhcegd', list_start, list_end)
 
-            ##  作用与中心重合时
+            ##  作用与中心重合时----------------------------------------------------
+
             else:
 
                 ##  在左端
@@ -149,14 +163,16 @@ def effective_hamiltonian(H_list,position,psi_origin):
                     I_right = np.identity(dim_virtual_1)
                     result = np.einsum('ad,be,cf->defabc', I_left, H_list.data, I_right)
 
-        ##  双位点作用情况
+        ##  两个位点作用情况----------------------------------------------------
+
         elif isinstance(H_list.target_index,list):
             index_0=H_list.target_index[0]
             index_1=H_list.target_index[1]
             index_n=position
             N= psi_origin.N
 
-            ##  两者重合时
+            ##  两者重合时----------------------------------------------------
+
             if index_0 == index_n or index_1 == index_n:
 
                 ##  在两端
@@ -195,10 +211,10 @@ def effective_hamiltonian(H_list,position,psi_origin):
                         s='abc,hibd,ahg,fe->cdegif'
                         result = np.einsum(s, psi[index_0], H_list.data, psi[index_0].conjugate(), np.identity(psi[index_1].shape[2]))
 
-            ##  两者不重合时
             else:
 
-                ##  作用在中心右端
+                ##  作用在中心右端----------------------------------------------------
+
                 if index_0>index_n:
 
                     ##  作用在右端，中心在左端
@@ -257,7 +273,8 @@ def effective_hamiltonian(H_list,position,psi_origin):
                             list_start = np.einsum('abcdefgh,gij,hkl->abcdefjl', list_start, psi[i], psi[i].conjugate())
                         result = np.einsum('abcdefjl,jl->abcdef', list_start, list_end)
 
-                ##  作用在中心左端时
+                ##  作用在中心左端时----------------------------------------------------
+
                 else:
 
                     ##  作用在左端，中心在右端

@@ -4,7 +4,7 @@ from Basis.Operator.LindbladList import LindbladList
 from Basis.Operator.Operator import Operator
 from Basis.Operator.OperatorList import OperatorList
 from Basis.Relation.Expect import expect
-from Basis.Relation.OperateState import operator_state
+from Basis.Relation.OperateState import operate_state
 from Basis.State.MatrixProductState import MatrixProductState
 from TimeEvolveBlockDecimation.TEBD import tebd_state
 
@@ -63,7 +63,7 @@ def quantum_trajectory(psi, H_list, C_list, expect_operator, t_0, t_1, delta_t):
                 np.random.seed()  # 初始化一个随机数
                 if np.random.rand() < delta:
                     index = np.random.choice(np.array(range(len(C_list.single_list))), size=1,p=np.array(delta_list) / np.sum(delta_list))[0]
-                    psi_moment = (delta_t / np.sqrt(delta_list[index])) * operator_state(C_list.single_list[index], psi,3)  # 跳跃并归一化
+                    psi_moment = (delta_t / np.sqrt(delta_list[index])) * operate_state(C_list.single_list[index], psi, 3)  # 跳跃并归一化
                 else:
                     psi_moment = psi_moment / np.sqrt(1 - delta)  # 不跳跃并归一化
 
@@ -87,7 +87,7 @@ def quantum_trajectory(psi, H_list, C_list, expect_operator, t_0, t_1, delta_t):
                 np.random.seed()  # 初始化一个随机数
                 if np.random.rand() < delta:
                     index = np.random.choice(np.array(range(len(C_list.single_list))), size=1,p=np.array(delta_list) / np.sum(delta_list))[0]
-                    psi_moment = np.sqrt(delta_t / delta_list[index]) * operator_state(C_list.single_list[index],psi_pre, 3)  # 跳跃并归一化
+                    psi_moment = np.sqrt(delta_t / delta_list[index]) * operate_state(C_list.single_list[index], psi_pre, 3)  # 跳跃并归一化
                 else:
                     psi_moment = psi_moment / np.sqrt(1 - delta)  # 不跳跃并归一化
 

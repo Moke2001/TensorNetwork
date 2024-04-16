@@ -31,7 +31,7 @@ def main_0():
 
 ##  求系统的相图
 def main_1():
-    H=hamiltonian_transverse_ising1(6,[0.5]*5,[1]*6)
+    H=hamiltonian_transverse_ising1(8,[0.5]*7,[1]*8)
     e,s=H.eigenstates()
     print(e[0])
 

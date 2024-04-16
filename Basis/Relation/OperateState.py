@@ -6,7 +6,7 @@ from Basis.State.MatrixProductState import MatrixProductState
 from Tool.SVD import svd_chi
 
 
-def operator_state(operator, mps_list_origin, chi):
+def operate_state(operator, mps_list_origin, chi):
     ##  参量类型检查模块-------------------------------------------------------------------------------------------------------------------
 
     assert isinstance(operator, Operator) or isinstance(operator, OperatorList),"operator必须是Operator类型或OperatorList类型"
@@ -64,7 +64,7 @@ def operator_state(operator, mps_list_origin, chi):
             elif operator.target_index[0] == 0 and operator.target_index[1] == mps_list.N - 1:
                 moment = np.einsum('ab,bc->ac', mps_list[index_0], mps_list[index_1])
                 moment = np.einsum('cdab,ab->cd', operator.data,moment)
-                U, V = svd_chi(moment.reshape(moment.shape[0] * moment.shape[1], moment.shape[2]), chi)
+                U, V = svd_chi(moment.reshape(moment.shape[0], moment.shape[1]), chi)
                 mps_list[index_0] = U
                 mps_list[index_1] = V
 
@@ -82,11 +82,11 @@ def operator_state(operator, mps_list_origin, chi):
 
         ##  单位点算符作用的循环
         for i in range(len(operator.single_list)):
-            mps_list=operator_state(operator.single_list[i], mps_list, chi)
+            mps_list=operate_state(operator.single_list[i], mps_list, chi)
 
         ##  双位点算符作用的循环
         for i in range(len(operator.double_list)):
-            mps_list=operator_state(operator.double_list[i], mps_list, chi)
+            mps_list=operate_state(operator.double_list[i], mps_list, chi)
 
     ##  结果处理模块-----------------------------------------------------------------------------------------------------------------------
 

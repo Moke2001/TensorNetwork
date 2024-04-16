@@ -50,6 +50,33 @@ class OperatorList(object):
         ##  返回结果
         return OperatorList('TransverseFieldIsing1TimeEvolve',self.N,U_list_single,U_list_double)
 
+    ## 将哈密顿量转化为虚时间演化算符列表的静态函数-----------------------------------------------------------------------------------
+
+    def virtual_time_evolve_operator(self, delta_tau):
+        ##  类型检查模块
+        assert isinstance(delta_tau, int) or isinstance(delta_tau, float), "delta_t必须是int类型或float类型"
+
+        ##  时间演化算符列表初始化
+        U_list_single = []
+        U_list_double = []
+
+        ##  对每个哈密顿量分量求对应的时间演化算符
+        for i in range(len(self.single_list)):
+            moment = self.single_list[i].data.copy()
+            moment = scipy.linalg.expm(-moment * delta_tau)  # 求演化算符
+            U_list_single.append(Operator('Evolve', self.single_list[i].N, self.single_list[i].target_index, moment, self.single_list[i].dim))  # 将演化算符张量化
+
+        for i in range(len(self.double_list)):
+            moment = self.double_list[i].data.copy()
+            shape = moment.shape
+            moment = moment.reshape(shape[0] * shape[1], shape[2] * shape[3])
+            moment = scipy.linalg.expm(-moment * delta_tau)  # 求演化算符
+            moment = moment.reshape(shape[0], shape[1], shape[2], shape[3])
+            U_list_double.append(Operator('Evolve', self.double_list[i].N, self.double_list[i].target_index, moment, self.double_list[i].dim))  # 将演化算符张量化
+
+        ##  返回结果
+        return OperatorList('VirtualTimeEvolve', self.N, U_list_single, U_list_double)
+
     ##  复制函数----------------------------------------------------------------------------------------------------------------------------
 
     def copy(self):

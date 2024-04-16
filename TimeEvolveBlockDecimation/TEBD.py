@@ -3,7 +3,7 @@ import numpy as np
 from Basis.Operator.Operator import Operator
 from Basis.Operator.OperatorList import OperatorList
 from Basis.Relation.Expect import expect
-from Basis.Relation.OperateState import operator_state
+from Basis.Relation.OperateState import operate_state
 from Basis.State.MatrixProductState import MatrixProductState
 
 
@@ -27,7 +27,7 @@ def tebd(psi, H_list, expect_operator, t_0, t_1, delta_t, chi):
     ##  将时间演化算符作用在态矢上的循环并得到当前时刻的期望
     for i in range(int((t_1 - t_0) / delta_t)):
         print("当前进度：" + str((i + 1) * 100 / int((t_1 - t_0) / delta_t)) + '%')  # 进度
-        psi_moment = operator_state(U_list, psi_moment, chi)
+        psi_moment = operate_state(U_list, psi_moment, chi)
         expect_value.append(expect(expect_operator, psi_moment))
 
     ##  结果处理与输出模块----------------------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ def tebd_state(psi, H_list, t_0, t_1, delta_t, chi):
 
     ##  将时间演化算符作用在态矢上的循环
     for i in range(int((t_1 - t_0) / delta_t)):
-        psi_moment = operator_state(U_list, psi_moment, chi)
+        psi_moment = operate_state(U_list, psi_moment, chi)
 
     ##  结果处理与输出模块----------------------------------------------------------------------------------------------------------------
 
