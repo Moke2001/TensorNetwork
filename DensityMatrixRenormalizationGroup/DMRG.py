@@ -1,6 +1,4 @@
 ##  对一个量子系统求哈密顿量的基态
-import warnings
-
 import numpy as np
 from Basis.Operator.Hamiltonian.HamiltonianTransverseFieldIsing1 import hamiltonian_transverse_field_ising1
 from Basis.Operator.OperatorList import OperatorList
@@ -20,7 +18,6 @@ def dmrg(H_list,chi):
     sweep_times=5000  # 扫描次数
     psi=MatrixProductState.random_mps(dim_list,0,chi)  # 初始的随机MPS
     energy_result=8000  # 能量初始化
-    accuracy=0.0001
     flag=0  # 方向指标
     position=0  # 位点指标
 
@@ -28,7 +25,7 @@ def dmrg(H_list,chi):
 
     ##  经历若干次扫描
     for i in range(sweep_times*N):
-        print(i)
+
         ##  求有效哈密顿量
         H_effective=effective_hamiltonian(H_list,position,psi)  # 有效哈密顿量的张量形式
         dim_matrix=np.prod(psi[position].shape)  # 有效哈密顿量的矩阵维度
@@ -56,14 +53,20 @@ def dmrg(H_list,chi):
         psi.center_orthogonalization(position)  # 将MPS向下一个位点中心正交化
 
         ##  判断是否收敛
-        if np.abs(energy_result - eig_value[index_min].real) < accuracy:
+        if np.abs(energy_result - eig_value[index_min].real) < 0.00001:
             return psi, eig_value[index_min].real
         else:
             energy_result=eig_value[index_min].real
 
     ##  结果处理模块-----------------------------------------------------------------------------------------------------------------------
-    warnings.warn("已达到循环上限，请注意甄别结果")
+    print('已到达循环上限')
     return psi, energy_result
+
+
+if __name__=='__main__':
+    H_list=hamiltonian_transverse_field_ising1(6,[0.5]*5,[1]*6)
+    psi,energy_result=dmrg(H_list,15)
+    print(energy_result)
 
 
 
