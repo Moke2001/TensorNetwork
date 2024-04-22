@@ -30,7 +30,7 @@ def es(H_list,T):
 
     for i in range(K):
         print(i)
-        rho=operate_operator(U_list,rho,chi)
+        rho=operate_operator(U_list,operate_operator(U_list.dagger(),rho,chi,'r'),chi,'l')
 
     ##  结果返回模块-----------------------------------------------------------------------------------------------------------------------
 

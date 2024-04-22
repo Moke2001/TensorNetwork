@@ -1,5 +1,6 @@
-##  将一个算符作用在密度算符的左边或右边
+##  将算符作用在密度矩阵乘积态上
 import numpy as np
+from Basis.Operator.GeneralOperator.PauliOperator import pauli_operator
 from Basis.Operator.Operator import Operator
 from Basis.Operator.OperatorList import OperatorList
 from Basis.State.MatrixProductOperator import MatrixProductOperator
@@ -12,7 +13,7 @@ def operate_operator(operator,rho_origin,chi,type):
     assert isinstance(operator, Operator) or isinstance(operator, OperatorList),"operator必须是Operator类型或OperatorList类型"
     assert isinstance(rho_origin, MatrixProductOperator),"mps_list_origin必须是MatrixProductState类型"
     assert isinstance(chi,int),"chi必须是int类型"
-    assert type is "L" or "R" or "l" or "r","type必须选择左右之一"
+    assert type == "L" or type =="R" or type =="l" or type =="r","type必须选择左右之一"
 
     rho = rho_origin.copy()  # 防止改变参数
 
@@ -167,3 +168,10 @@ def operate_operator(operator,rho_origin,chi,type):
 
     ##  返回结果
     return rho
+
+
+if __name__ == '__main__':
+    operator_test=pauli_operator(3,1,'z')
+    rho_test=MatrixProductOperator.random_mpo([2,2,2],1,3)
+    result_test=operate_operator(operator_test, rho_test, 3,'l')
+    pass

@@ -16,9 +16,9 @@ def operator_sigma(N, j,arg):
         elif arg=='i' or arg=='I':
             moment=identity(2)
         elif arg=='+':
-            moment=sigmax()+1j*sigmay()
+            moment=(sigmax()+1j*sigmay())/2
         elif arg=='-':
-            moment=sigmax()-1j*sigmay()
+            moment=(sigmax()-1j*sigmay())/2
         elif arg=='1':
             moment=0.5*(sigmaz()+identity(2))
         elif arg=='0':

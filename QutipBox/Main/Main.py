@@ -36,5 +36,22 @@ def main_1():
     print(e[0])
 
 
+def main_2():
+    t=np.linspace(0,10,1000)
+    p=t.copy()
+    for i in range(len(t)):
+        r=np.mod(i,50)*(10/1000)
+        if np.mod(i,50)==0:
+            p[i]=1
+        else:
+            p[i]=1-np.sin(r*1)**2
+    eng = engine.start_matlab()
+    eng.plot(t, p, 'LineWidth', 1.5)
+    eng.grid('on', nargout=0)
+    eng.xlabel('J', nargout=0)
+    eng.ylabel('Energy of Ground State', nargout=0)
+    os.system('pause')
+
+
 if __name__ == '__main__':
-    main_1()
+    main_2()

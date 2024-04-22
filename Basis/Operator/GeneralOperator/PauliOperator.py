@@ -18,9 +18,9 @@ def pauli_operator(N,target_index,type):
         elif type == "Z"or type == "z":
             data = np.array([[1, 0], [0, -1]])
         elif type == "-":
-            data = np.array([[0,1],[1,0]])-1j*np.array([[0,-1j],[1j,0]])
+            data = np.array([[0,0],[1,0]])
         elif type == "+":
-            data = np.array([[0,1],[1,0]])+1j*np.array([[0,-1j],[1j,0]])
+            data = np.array([[0,1],[0,0]])
         elif type == "I"or type == "i":
             data = np.identity(2)
         elif type == "1":
